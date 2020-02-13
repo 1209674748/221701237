@@ -1,4 +1,4 @@
-import java.io.BufferedReader;
+﻿import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 /**
  * InfectStatistic
  * TODO
@@ -45,6 +44,7 @@ class InfectStatistic {
         {
         	list.add(args[i]);
         }
+int a
         boolean read=false;
         Command command = new Command(list);
         command.isLegal();
