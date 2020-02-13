@@ -72,6 +72,7 @@ class fileWrite
 	private String outPath;
 	private boolean isType;
 	private List<String> typeContent;
+	private File file;
 	public fileWrite(province [] provinceList,boolean isProvice,boolean isType,
 			List<String> provinceContent,List<String> typeContent,String outPath)
 	{
@@ -81,10 +82,36 @@ class fileWrite
 		this.isType = isType;
 		this.typeContent = typeContent;
 		this.outPath = outPath;
-		if(isType)
-		{
-			
-		}
+		
+       	String parentPath = outPath.substring(0,outPath.lastIndexOf("\\"));
+       	File file = new File(parentPath);
+       	File file2 = new File(outPath);
+        if (!file.exists()) 
+        {
+            file.mkdirs();// 能创建多级目录
+            try 
+            {
+				file2.createNewFile();
+			} 
+            catch (IOException e) {
+				// TODO Auto-generated catch block
+				System.out.println("输出路径有误");
+				System.exit(0);
+			}
+        }
+        else
+        {
+        	  try 
+        	  {
+  				file2.createNewFile();
+  			  } 
+        	  catch (IOException e) 
+        	  {
+  				// TODO Auto-generated catch block
+  				System.out.println("输出路径有误");
+  				System.exit(0);
+  			}
+        }
 	}
 	public void writeResult()
 	{
