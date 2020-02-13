@@ -47,18 +47,22 @@ class InfectStatistic {
         }
         boolean read=false;
         Command command = new Command(list);
-        command.isLegal();
-        File fileLog = new File(command.logContent);
-        fileRead fileoperate;
-        if(fileLog.exists())
+        if(!command.isLegal())
         {
-        	fileoperate = new fileRead(command.logContent,provinceList);
-        }
-        else
-        {
-        	System.out.println("日志文件夹不存在，请检查路径是否正确");
         	return;
         }
+        
+       // File fileLog = new File(command.logContent);
+        fileRead fileoperate = new fileRead(command.logContent,provinceList);
+//        if(fileLog.exists())
+//        {
+//        	fileoperate = new fileRead(command.logContent,provinceList);
+//        }
+//        else
+//        {
+//        	System.out.println("日志文件夹不存在，请检查路径是否正确");
+//        	return;
+//        }
         if(command.dataContent.equals("all"))
         {
         	fileoperate.readLog("all");
@@ -246,7 +250,13 @@ class fileRead{
 		provinceList = pList;
 		files = new ArrayList<String>();
 		filesName = new ArrayList<String>();
-        file=new File(path);
+		file=new File(path);
+        //file=new File(path);
+		if(!file.exists())
+		{
+			System.out.println("日志文件路径有误!");
+			System.exit(0);
+		}
         tempList = file.listFiles(); 
         if(tempList==null)
         {
@@ -508,7 +518,7 @@ class Command{
 			}
 		}
 	}
-	public int isLegal()
+	public boolean isLegal()
 	{
 		if(data)
 		{
@@ -517,49 +527,72 @@ class Command{
 	        Matcher m = pattern.matcher(dataContent);
 	        boolean dateFlag = m.matches();
 	        if (!dateFlag) {
-	            System.out.println("格式错误");
-	            return -1;//日期格式错误 例如:2020-1-3(正确为2020-01-03）
+	            System.out.println("日期格式错误");
+	            return false;//日期格式错误 例如:2020-1-3(正确为2020-01-03）
 	        }
 	        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd"); 
 	        formatter.setLenient(false);
 	        try{  
 	            formatter.parse(dataContent);  
-	            System.out.print("格式正确！");
 	        }catch(Exception e){
-	            System.out.println("格式错误！");
-	            return -2;//日期格式错误 例如:2a20-01-03(出现非数字字符)
+	            System.out.println("日期格式错误！");
+	            return false;//日期格式错误 例如:2a20-01-03(出现非数字字符)
 	        }
 		}
 		if(log)
 		{
 			if(logContent==null)
 			{
-				return -3;//输入-log命令 却未输入参数
+				System.out.println("-log命名参数缺失！");
+				return false;//输入-log命令 却未输入参数
 			}
 		}
 		else
 		{
-			return -4;//缺少-log命令
+			System.out.println("缺失-log命令！");
+			return false;//缺少-log命令
 		}
 		if(out)
 		{
 			if(logContent==null)
 			{
-				return -5;//输入-out命令 却未输入参数
+				System.out.println("-out命令参数缺失！");
+				return false;//输入-out命令 却未输入参数
 			}
 		}
 		else
 		{
-			return -6;//确实-out命令
+			System.out.println("缺失-out命令！");
+			return false;//缺失-out命令
 		}
 		if(type)
 		{
 			if(typeContent==null)
 			{
-				return -7;//输入-type 命令 却不输入参数
+				System.out.println("-typy命令参数缺失！");
+				return false;//输入-type 命令 却不输入参数
+			}
+			else
+			{
+				for(int i=0;i<typeContent.size();i++)
+				{
+					if(!typeContent.get(i).equals("sp")||!typeContent.get(i).equals("ip")
+							||!typeContent.get(i).equals("cure")||!typeContent.get(i).equals("dead"))
+					{
+						System.out.println("-type命令参数错误！");
+						return false;//type的参数不是（ip sp cure dead四种之一）
+					}
+				}
 			}
 		}
-		return 1;
+		if(province)
+		{
+			if(provinceContent==null)
+			{
+				return false;//输入 -province命令却不输入参数
+			}
+		}
+		return true;
 	}
 	public void Get_provinceContent(int i)
 	{
