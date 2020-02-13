@@ -45,59 +45,52 @@ class InfectStatistic {
         {
         	list.add(args[i]);
         }
-        boolean read=false;
         Command command = new Command(list);
         if(!command.isLegal())
         {
-        	return;
+        	System.exit(0);
         }
-        
-       // File fileLog = new File(command.logContent);
         fileRead fileoperate = new fileRead(command.logContent,provinceList);
-//        if(fileLog.exists())
-//        {
-//        	fileoperate = new fileRead(command.logContent,provinceList);
-//        }
-//        else
-//        {
-//        	System.out.println("日志文件夹不存在，请检查路径是否正确");
-//        	return;
-//        }
         if(command.dataContent.equals("all"))
         {
         	fileoperate.readLog("all");
         }
         else
         {
-        	read=fileoperate.readLog(command.dataContent);
+        	fileoperate.readLog(command.dataContent);
         }
-//        if(read==false)
-//        {
-//        	System.out.println("日期有误");
-//        	return;
-//        }
-        fileWrite wr = new fileWrite(provinceList,command.province,command.provinceContent,command.outContent);
+        fileWrite wr = new fileWrite(provinceList,command.province,command.type,
+        		command.provinceContent,command.typeContent,command.outContent);
         wr.writeResult();
     }
 }
 class fileWrite
 {
 	private province [] provinceList;
-	private boolean isProvice;
+	private boolean isProvince;
 	private List<String> provinceContent;
 	private String outPath;
-	public fileWrite(province [] provinceList,boolean isProvice,List<String> provinceContent,String outPath)
+	private boolean isType;
+	private List<String> typeContent;
+	public fileWrite(province [] provinceList,boolean isProvice,boolean isType,
+			List<String> provinceContent,List<String> typeContent,String outPath)
 	{
 		this.provinceList = provinceList;
-		this.isProvice = isProvice;
+		this.isProvince = isProvice;
 		this.provinceContent = provinceContent;
+		this.isType = isType;
+		this.typeContent = typeContent;
 		this.outPath = outPath;
+		if(isType)
+		{
+			
+		}
 	}
 	public void writeResult()
 	{
-		if(!isProvice)
-        {
-	        for(int i=0;i<provinceList.length;i++)
+		if(isProvince==false&&isType==false)
+		{
+			for(int i=0;i<provinceList.length;i++)
 	        {
 	        	if(provinceList[i].getAppear())
 	        	{
@@ -109,26 +102,124 @@ class fileWrite
 		        	System.out.println();
 	        	}
 	        }
-        }
-        else
-        {
-	        for(int i=0;i<provinceContent.size();i++)
+		}
+		if(isProvince==true&&isType==false)
+		{
+			for(int i=0;i<provinceList.length;i++)
+			{
+				for(int n=0;n<provinceContent.size();n++)
+				{
+					if(provinceList[i].getName().equals(provinceContent.get(n)))
+					{
+						System.out.println(provinceList[i].getName());
+			        	System.out.println("感染患者 "+provinceList[i].getIp());
+			        	System.out.println("疑似患者 "+provinceList[i].getSp());
+			        	System.out.println("治愈 "+provinceList[i].getCure());
+			        	System.out.println("死亡 "+provinceList[i].getDead());
+			        	System.out.println();
+					}
+				}
+			}
+		}
+		if(isProvince==true&&isType==true)
+		{
+			for(int i=0;i<provinceList.length;i++)
+			{
+				for(int n=0;n<provinceContent.size();n++)
+				{
+					if(provinceList[i].getName().equals(provinceContent.get(n)))
+					{
+						System.out.println(provinceList[i].getName());
+						for(int j=0;j<typeContent.size();j++)
+						{
+							String type = typeContent.get(j);
+							if(type.equals("ip"))
+							{
+								System.out.println("感染患者 "+provinceList[i].getIp());
+							}
+							if(type.equals("sp"))
+							{
+								System.out.println("感染患者 "+provinceList[i].getSp());
+							}
+							if(type.equals("cure"))
+							{
+								System.out.println("治愈 "+provinceList[i].getCure());
+							}
+							if(type.equals("dead"))
+							{
+								System.out.println("死亡 "+provinceList[i].getDead());
+							}
+						}
+						System.out.println();
+					}
+				}
+			}
+		}
+		if(isProvince==false&&isType==true)
+		{
+			for(int i=0;i<provinceList.length;i++)
 	        {
-	        	provinceList[findLocal(provinceContent.get(i))].setIsInput();
-	        }
-	        for(int i=0;i<provinceList.length;i++)
-	        {
-	        	if(provinceList[i].getIsInput())
+	        	if(provinceList[i].getAppear())
 	        	{
 	        		System.out.println(provinceList[i].getName());
-		        	System.out.println("感染患者 "+provinceList[i].getIp());
-		        	System.out.println("疑似患者 "+provinceList[i].getSp());
-		        	System.out.println("治愈 "+provinceList[i].getCure());
-		        	System.out.println("死亡 "+provinceList[i].getDead());
-		        	System.out.println();
-	        	}
+					for(int j=0;j<typeContent.size();j++)
+					{
+						String type = typeContent.get(j);
+						if(type.equals("ip"))
+						{
+							System.out.println("感染患者 "+provinceList[i].getIp());
+						}
+						if(type.equals("sp"))
+						{
+							System.out.println("感染患者 "+provinceList[i].getSp());
+						}
+						if(type.equals("cure"))
+						{
+							System.out.println("治愈 "+provinceList[i].getCure());
+						}
+						if(type.equals("dead"))
+						{
+							System.out.println("死亡 "+provinceList[i].getDead());
+						}
+					}
+					System.out.println();
+				}
 	        }
-        } 
+		}
+//		if(!isProvice)
+//        {
+//	        for(int i=0;i<provinceList.length;i++)
+//	        {
+//	        	if(provinceList[i].getAppear())
+//	        	{
+//		        	System.out.println(provinceList[i].getName());
+//		        	System.out.println("感染患者 "+provinceList[i].getIp());
+//		        	System.out.println("疑似患者 "+provinceList[i].getSp());
+//		        	System.out.println("治愈 "+provinceList[i].getCure());
+//		        	System.out.println("死亡 "+provinceList[i].getDead());
+//		        	System.out.println();
+//	        	}
+//	        }
+//        }
+//        else
+//        {
+//	        for(int i=0;i<provinceContent.size();i++)
+//	        {
+//	        	provinceList[findLocal(provinceContent.get(i))].setIsInput();
+//	        }
+//	        for(int i=0;i<provinceList.length;i++)
+//	        {
+//	        	if(provinceList[i].getIsInput())
+//	        	{
+//	        		System.out.println(provinceList[i].getName());
+//		        	System.out.println("感染患者 "+provinceList[i].getIp());
+//		        	System.out.println("疑似患者 "+provinceList[i].getSp());
+//		        	System.out.println("治愈 "+provinceList[i].getCure());
+//		        	System.out.println("死亡 "+provinceList[i].getDead());
+//		        	System.out.println();
+//	        	}
+//	        }
+//        } 
 	}
 	public int findLocal(String name)
 	{
@@ -576,8 +667,8 @@ class Command{
 			{
 				for(int i=0;i<typeContent.size();i++)
 				{
-					if(!typeContent.get(i).equals("sp")||!typeContent.get(i).equals("ip")
-							||!typeContent.get(i).equals("cure")||!typeContent.get(i).equals("dead"))
+					if(!typeContent.get(i).equals("sp")&&!typeContent.get(i).equals("ip")
+							&&!typeContent.get(i).equals("cure")&&!typeContent.get(i).equals("dead"))
 					{
 						System.out.println("-type命令参数错误！");
 						return false;//type的参数不是（ip sp cure dead四种之一）
