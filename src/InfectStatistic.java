@@ -29,7 +29,7 @@ import java.util.regex.Pattern;
 
 class InfectStatistic {
     public static void main(String[] args) {
-    	String[] provinceName= {
+    	String[] provinceName = {
     			"安徽","北京","重庆","福建","甘肃","广东",
     			"广西","贵州","海南","河北","河南","黑龙江",
     			"湖北","湖南","吉林","江苏","江西","辽宁",
@@ -38,7 +38,7 @@ class InfectStatistic {
     	province [] provinceList= new province[provinceName.length+1];
     	List<String> list = new ArrayList<String>();
     	Command command;
-    	fileRead fileoperate;
+    	readFile fileoperate;
     	
     	provinceList[0] = new province("全国");
     	provinceList[0].setAppear();
@@ -55,7 +55,7 @@ class InfectStatistic {
         {
         	System.exit(0);
         }
-        fileoperate = new fileRead(command.getLogContent(),provinceList);//初始化一个文件操作读文件类
+        fileoperate = new readFile(command.getLogContent(),provinceList);//初始化一个文件操作读文件类
         if(command.getDateContent().equals("all"))//判断是否有指定具体日期
         {
         	fileoperate.readLog("all");
@@ -64,7 +64,7 @@ class InfectStatistic {
         {
         	fileoperate.readLog(command.getDateContent());
         }
-        fileWrite wr = new fileWrite(provinceList,command.getProvince(),command.getType(),
+        writeFile wr = new writeFile(provinceList,command.getProvince(),command.getType(),
         		command.getProvinceContent(),command.getTypeContent(),command.getOogContent());
         wr.writeResult();
     }
@@ -76,7 +76,7 @@ class InfectStatistic {
 //isType:命令行是否接收-type命令 值同isProvince
 //typeContent:-type命令后带的参数
 //file:输出结果文件
-class fileWrite
+class writeFile
 {
 	private province [] provinceList;
 	private boolean isProvince;
@@ -84,7 +84,7 @@ class fileWrite
 	private boolean isType;
 	private List<String> typeContent;
 	private File file;
-	public fileWrite(province [] provinceList,boolean isProvice,boolean isType,
+	public writeFile(province [] provinceList,boolean isProvice,boolean isType,
 			List<String> provinceContent,List<String> typeContent,String outPath)
 	{
 		this.provinceList = provinceList;
@@ -160,7 +160,7 @@ class fileWrite
 								+" "+"疑似患者 "+provinceList[i].getSp()+" "+"治愈 "+provinceList[i].getCure()
 								+" "+"死亡 "+provinceList[i].getDead()+"人");
 						bw.newLine();
-						
+
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -441,7 +441,7 @@ class province
 //templates:用于匹配日志文件内容的正则表达式模板
 //maxDate:该路径下的日志文件的最大日期
 //minDate:该路径下的日志文件的最小日期
-class fileRead{
+class readFile{
 	String path;
 	ArrayList<String> files;
 	ArrayList<String> filesName;
@@ -461,7 +461,7 @@ class fileRead{
 	//函数功能：1.判断日志文件路径
 	//			2.获取日志文件路径下所有文件的绝对路径
 	//			3.获取日志文件路径下所有文件的名称
-	public fileRead(String path,province [] pList)
+	public readFile(String path,province [] pList)
 	{
 		this.path=path;
 		provinceList = pList;
@@ -761,7 +761,7 @@ class Command{
 		{
 			String str = list.get(i);
 			switch (str) {
-				case "-list":
+				case "list":
 					this.list=true;
 					break;
 				case "-log":
