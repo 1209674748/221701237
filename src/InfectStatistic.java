@@ -22,9 +22,9 @@ import java.util.regex.Pattern;
  * InfectStatistic
  * TODO
  *
- * @author �Գ�������
- * @version xxx
- * @since xxx
+ * @author 卧城听风雨
+ * @version 1
+ * @since 
  */
 
 class InfectStatistic {
@@ -36,23 +36,26 @@ class InfectStatistic {
     			"内蒙古","宁夏","青海","山东","山西","陕西",
     			"上海","四川","天津","西藏","新疆","云南","浙江"};
     	province [] provinceList= new province[provinceName.length+1];
+    	List<String> list = new ArrayList<String>();
+    	Command command;
+    	fileRead fileoperate;
+    	
     	provinceList[0] = new province("全国");
     	provinceList[0].setAppear();
     	for(int i=1;i<provinceName.length+1;i++)
     	{
     		provinceList[i] = new province(provinceName[i-1]);
     	}
-        List<String> list = new ArrayList<String>();
         for(int i=0;i<args.length;i++)
         {
         	list.add(args[i]);
         }
-        Command command = new Command(list);
+        command = new Command(list);
         if(!command.isLegal())
         {
         	System.exit(0);
         }
-        fileRead fileoperate = new fileRead(command.getLogContent(),provinceList);
+        fileoperate = new fileRead(command.getLogContent(),provinceList);
         if(command.getDateContent().equals("all"))
         {
         	fileoperate.readLog("all");
@@ -66,12 +69,18 @@ class InfectStatistic {
         wr.writeResult();
     }
 }
+//文件操作类-写文件
+//provinceList:全国和各个省份的数据统计数组
+//isProvince:命令行是否接收-province命令 如果有 isProvince=true反之false
+//provinceContent:-province命令后带的参数
+//isType:命令行是否接收-type命令 值同isProvince
+//typeContent:-type命令后带的参数
+//file:输出结果文件
 class fileWrite
 {
 	private province [] provinceList;
 	private boolean isProvince;
 	private List<String> provinceContent;
-	private String outPath;
 	private boolean isType;
 	private List<String> typeContent;
 	private File file;
@@ -83,10 +92,17 @@ class fileWrite
 		this.provinceContent = provinceContent;
 		this.isType = isType;
 		this.typeContent = typeContent;
-		this.outPath = outPath;
 		
-       	String parentPath = outPath.substring(0,outPath.lastIndexOf("\\"));
-       	File file1 = new File(parentPath);
+		String parentPath=null;
+		if(outPath.lastIndexOf("\\")<0)
+		{
+			parentPath = outPath.substring(0,outPath.lastIndexOf("/"));
+		}
+		else
+		{
+			parentPath = outPath.substring(0,outPath.lastIndexOf("\\"));
+		}  	
+       	File file1 = new File(parentPath);//file1为file的父文件路径
        	file = new File(outPath);
         if (!file1.exists()) 
         {
