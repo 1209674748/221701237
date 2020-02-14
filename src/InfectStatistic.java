@@ -52,17 +52,17 @@ class InfectStatistic {
         {
         	System.exit(0);
         }
-        fileRead fileoperate = new fileRead(command.logContent,provinceList);
-        if(command.dateContent.equals("all"))
+        fileRead fileoperate = new fileRead(command.getLogContent(),provinceList);
+        if(command.getDateContent().equals("all"))
         {
         	fileoperate.readLog("all");
         }
         else
         {
-        	fileoperate.readLog(command.dateContent);
+        	fileoperate.readLog(command.getDateContent());
         }
-        fileWrite wr = new fileWrite(provinceList,command.province,command.type,
-        		command.provinceContent,command.typeContent,command.outContent);
+        fileWrite wr = new fileWrite(provinceList,command.getProvince(),command.getType(),
+        		command.getProvinceContent(),command.getTypeContent(),command.getOogContent());
         wr.writeResult();
     }
 }
@@ -141,12 +141,6 @@ class fileWrite
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-//		        	System.out.println(provinceList[i].getName());
-//		        	System.out.println("感染患者 "+provinceList[i].getIp());
-//		        	System.out.println("疑似患者 "+provinceList[i].getSp());
-//		        	System.out.println("治愈 "+provinceList[i].getCure());
-//		        	System.out.println("死亡 "+provinceList[i].getDead());
-//		        	System.out.println();
 	        	}
 	        }
 			try {
@@ -175,12 +169,6 @@ class fileWrite
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-//						System.out.println(provinceList[i].getName());
-//			        	System.out.println("感染患者 "+provinceList[i].getIp());
-//			        	System.out.println("疑似患者 "+provinceList[i].getSp());
-//			        	System.out.println("治愈 "+provinceList[i].getCure());
-//			        	System.out.println("死亡 "+provinceList[i].getDead());
-//			        	System.out.println();
 					}
 				}
 			}
@@ -206,7 +194,6 @@ class fileWrite
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						}
-						///System.out.println(provinceList[i].getName());
 						for(int j=0;j<typeContent.size();j++)
 						{
 							String type = typeContent.get(j);
@@ -218,7 +205,6 @@ class fileWrite
 									// TODO Auto-generated catch block
 									e.printStackTrace();
 								}
-								//System.out.println("感染患者 "+provinceList[i].getIp());
 							}
 							if(type.equals("sp"))
 							{
@@ -228,7 +214,6 @@ class fileWrite
 									// TODO Auto-generated catch block
 									e.printStackTrace();
 								}
-								//System.out.println("感染患者 "+provinceList[i].getSp());
 							}
 							if(type.equals("cure"))
 							{
@@ -238,7 +223,6 @@ class fileWrite
 									// TODO Auto-generated catch block
 									e.printStackTrace();
 								}
-								//System.out.println("治愈"+provinceList[i].getCure());
 							}
 							if(type.equals("dead"))
 							{
@@ -248,7 +232,6 @@ class fileWrite
 									// TODO Auto-generated catch block
 									e.printStackTrace();
 								}
-								//System.out.println("死亡 "+provinceList[i].getDead());
 							}
 						}
 						try {
@@ -280,7 +263,6 @@ class fileWrite
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-	        		//System.out.println(provinceList[i].getName());
 					for(int j=0;j<typeContent.size();j++)
 					{
 						String type = typeContent.get(j);
@@ -292,7 +274,6 @@ class fileWrite
 								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
-							//System.out.println("感染患者 "+provinceList[i].getIp());
 						}
 						if(type.equals("sp"))
 						{
@@ -302,7 +283,6 @@ class fileWrite
 								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
-							//System.out.println("感染患者 "+provinceList[i].getSp());
 						}
 						if(type.equals("cure"))
 						{
@@ -312,7 +292,6 @@ class fileWrite
 								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
-							//System.out.println("治愈"+provinceList[i].getCure());
 						}
 						if(type.equals("dead"))
 						{
@@ -322,7 +301,6 @@ class fileWrite
 								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
-							//System.out.println("死亡 "+provinceList[i].getDead());
 						}
 					}
 					try {
@@ -331,7 +309,6 @@ class fileWrite
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					//System.out.println();
 				}
 	        }
 			try {
@@ -342,40 +319,6 @@ class fileWrite
 				e.printStackTrace();
 			}
 		}
-//		if(!isProvice)
-//        {
-//	        for(int i=0;i<provinceList.length;i++)
-//	        {
-//	        	if(provinceList[i].getAppear())
-//	        	{
-//		        	System.out.println(provinceList[i].getName());
-//		        	System.out.println("感染患者 "+provinceList[i].getIp());
-//		        	System.out.println("疑似患者 "+provinceList[i].getSp());
-//		        	System.out.println("治愈 "+provinceList[i].getCure());
-//		        	System.out.println("死亡 "+provinceList[i].getDead());
-//		        	System.out.println();
-//	        	}
-//	        }
-//        }
-//        else
-//        {
-//	        for(int i=0;i<provinceContent.size();i++)
-//	        {
-//	        	provinceList[findLocal(provinceContent.get(i))].setIsInput();
-//	        }
-//	        for(int i=0;i<provinceList.length;i++)
-//	        {
-//	        	if(provinceList[i].getIsInput())
-//	        	{
-//	        		System.out.println(provinceList[i].getName());
-//		        	System.out.println("感染患者 "+provinceList[i].getIp());
-//		        	System.out.println("疑似患者 "+provinceList[i].getSp());
-//		        	System.out.println("治愈 "+provinceList[i].getCure());
-//		        	System.out.println("死亡 "+provinceList[i].getDead());
-//		        	System.out.println();
-//	        	}
-//	        }
-//        } 
 	}
 	public int findLocal(String name)
 	{
@@ -499,7 +442,6 @@ class fileRead{
 		files = new ArrayList<String>();
 		filesName = new ArrayList<String>();
 		file=new File(path);
-        //file=new File(path);
 		if(!file.exists())
 		{
 			System.out.println("日志文件路径有误!");
@@ -510,13 +452,11 @@ class fileRead{
         {
         	System.out.println("null");
         }
-        //System.out.println(tempList.length);
         for(int i=0;i<tempList.length;i++)
         {
         	String f = tempList[i].toString();
         	files.add(f);
         	filesName.add(f.substring(f.length()-18,f.length()-8));
-        	//System.out.println(filesName.get(i));
         }
         if((maxdate = findMaxdate(filesName))==null)
         {
@@ -581,7 +521,6 @@ class fileRead{
 				FileInputStream fileInputStream = new FileInputStream(files.get(i));
 				InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-                //StringBuffer sb = new StringBuffer();
                 String text = null;
                 try {
 					while((text = bufferedReader.readLine()) != null){
@@ -614,12 +553,8 @@ class fileRead{
 		text=text.trim();
 		if(text.matches(templates[0]))
 		{
-			//System.out.println(123);
 			String provinceName = getProvince(text,0);
-			//System.out.println(text);
-			//System.out.println(text.substring(text.lastIndexOf(" "),text.length()-1).trim());
 			int num = getNum(text);
-			//int num = Integer.parseInt(text.substring(text.lastIndexOf(" "),text.length()-1).trim());
 			provinceList[findLocal(provinceName)].addIp(num);
 			provinceList[findLocal(provinceName)].setAppear();
 			provinceList[0].addIp(num);
@@ -628,53 +563,35 @@ class fileRead{
 		{
 			String provinceName = getProvince(text,0);
 			int num = getNum(text);
-			//System.out.println(text.substring(text.lastIndexOf(" "),text.length()-1).trim());
-			//int num = Integer.parseInt(text.substring(text.lastIndexOf(" "),text.length()-1).trim());
 			provinceList[findLocal(provinceName)].addSp(num);
 			provinceList[findLocal(provinceName)].setAppear();
 			provinceList[0].addSp(num);
 		}
 		if(text.matches(templates[2]))
 		{
-			//System.out.println(text);
 			String provinceName1 = getProvince(text,0);
 			String provinceName2 = getProvince(text,3);
 			int num = getNum(text);
-			//int num = Integer.parseInt(text.substring(text.lastIndexOf(" "),text.length()-1).trim());
-			//System.out.println(provinceName1);
-			//System.out.println(provinceName2);
-			//System.out.println(num);
 			provinceList[findLocal(provinceName1)].subIp(num);
-			provinceList[findLocal(provinceName1)].setAppear();
-			
+			provinceList[findLocal(provinceName1)].setAppear();		
 			provinceList[findLocal(provinceName2)].addIp(num);
 			provinceList[findLocal(provinceName2)].setAppear();
 		}
 		if(text.matches(templates[3]))
 		{
-			//System.out.println(text);
 			String provinceName1 = getProvince(text,0);
 			String provinceName2 = getProvince(text,3);
 			int num = getNum(text);
-			//int num = Integer.parseInt(text.substring(text.lastIndexOf(" "),text.length()-1).trim());
-			//System.out.println(provinceName1);
-			//System.out.println(provinceName2);
-			//System.out.println(num);
 			provinceList[findLocal(provinceName1)].subSp(num);
-			provinceList[findLocal(provinceName1)].setAppear();
-			
+			provinceList[findLocal(provinceName1)].setAppear();		
 			provinceList[findLocal(provinceName2)].addSp(num);
 			provinceList[findLocal(provinceName2)].setAppear();
 			
 		}
 		if(text.matches(templates[4]))
 		{
-			//System.out.println(text);
 			String provinceName = getProvince(text,0);
 			int num = getNum(text);
-			//int num = Integer.parseInt(text.substring(text.lastIndexOf(" "),text.length()-1).trim());
-			//System.out.println(provinceName);
-			//System.out.println(num);
 			int i = findLocal(provinceName);
 			provinceList[i].addDead(num);
 			provinceList[i].subIp(num);
@@ -684,12 +601,8 @@ class fileRead{
 		}
 		if(text.matches(templates[5]))
 		{
-			//System.out.println(text);
 			String provinceName = getProvince(text,0);
 			int num = getNum(text);
-			//int num = Integer.parseInt(text.substring(text.lastIndexOf(" "),text.length()-1).trim());
-			//System.out.println(provinceName);
-			//System.out.println(num);
 			int i = findLocal(provinceName);
 			provinceList[i].addCure(num);
 			provinceList[i].subIp(num);
@@ -699,12 +612,8 @@ class fileRead{
 		}
 		if(text.matches(templates[6]))
 		{
-			//System.out.println(text);
 			String provinceName = getProvince(text,0);
 			int num = getNum(text);
-			//int num = Integer.parseInt(text.substring(text.lastIndexOf(" "),text.length()-1).trim());
-			//System.out.println(provinceName);
-			//System.out.println(num);
 			int i = findLocal(provinceName);
 			provinceList[i].addIp(num);
 			provinceList[i].subSp(num);
@@ -714,12 +623,8 @@ class fileRead{
 		}
 		if(text.matches(templates[7]))
 		{
-			//System.out.println(text);
 			String provinceName = getProvince(text,0);
 			int num = getNum(text);
-			//int num = Integer.parseInt(text.substring(text.lastIndexOf(" "),text.length()-1).trim());
-			//System.out.println(provinceName);
-			//System.out.println(num);
 			int i = findLocal(provinceName);
 			provinceList[i].subSp(num);
 			provinceList[i].setAppear();
@@ -742,18 +647,47 @@ class fileRead{
 	}
 }
 class Command{
-	Boolean list=false;
-	Boolean log=false;
-	Boolean out=false;
-	Boolean date=false;
-	Boolean type=false;
-	Boolean province=false;
-	String dateContent;
-	String logContent;
-	String outContent;
-	List<String> provinceContent = new ArrayList<String>();
-	List<String> typeContent = new ArrayList<String>();
-	List<String> command = new ArrayList<String>();
+	private Boolean list=false;
+	private Boolean log=false;
+	private Boolean out=false;
+	private Boolean date=false;
+	private Boolean type=false;
+	private Boolean province=false;
+	private String dateContent;
+	private String logContent;
+	private String outContent;
+	private List<String> provinceContent = new ArrayList<String>();
+	private List<String> typeContent = new ArrayList<String>();
+	private List<String> command = new ArrayList<String>();
+	
+	public List<String> getTypeContent()
+	{
+		return typeContent;
+	}
+	public List<String> getProvinceContent()
+	{
+		return provinceContent;
+	}
+	public boolean getType()
+	{
+		return type;
+	}
+	public boolean getProvince()
+	{
+		return province;
+	}
+	public String getLogContent()
+	{
+		return logContent;
+	}
+	public String getOogContent()
+	{
+		return outContent;
+	}
+	public String getDateContent()
+	{
+		return dateContent;
+	}
 	public Command(List<String> list)
 	{
 		command=list;
@@ -762,28 +696,28 @@ class Command{
 		{
 			String str = list.get(i);
 			switch (str) {
-				case "list":
+				case "-list":
 					this.list=true;
 					break;
 				case "-log":
 					this.log=true;
-					Get_logContent(i+1);
+					getLogContent(i+1);
 					break;
 				case "-out":
 					this.out=true;
-					Get_outContent(i+1);
+					getOutContent(i+1);
 					break;
 				case "-date":
 					this.date=true;
-					Get_dateContent(i+1);
+					getDateContent(i+1);
 					break;
 				case "-province":
 					this.province=true;
-					Get_provinceContent(i+1);
+					getProvinceContent(i+1);
 					break;
 				case "-type":
 					this.type=true;
-					Get_typeContent(i+1);
+					getTypeContent(i+1);
 					break;
 					
 			}
@@ -791,6 +725,11 @@ class Command{
 	}
 	public boolean isLegal()
 	{
+		if(!list)
+		{
+			System.out.println("-list命令缺失");
+			return false;
+		}
 		if(date)
 		{
 			String regex = "[0-9]{4}-[0-9]{2}-[0-9]{2}";
@@ -865,55 +804,44 @@ class Command{
 		}
 		return true;
 	}
-	public void Get_provinceContent(int i)
+	public void getProvinceContent(int i)
 	{
 		while(i<command.size()&&!command.get(i).matches("-.*"))
 		{
 			provinceContent.add(command.get(i));
 			i++;
 		}
-//		for(int n=0;n<provinceContent.size();n++)
-//		{
-//			System.out.println(provinceContent.get(n));
-//		}
 	}
-	public void Get_typeContent(int i)
+	public void getTypeContent(int i)
 	{
 		while(i<command.size()&&!command.get(i).matches("-.*"))
 		{
 			typeContent.add(command.get(i));
 			i++;
 		}
-//		for(int n=0;n<typeContent.size();n++)
-//		{
-//			System.out.println(typeContent.get(n));
-//		}
 	}
-	public void Get_dateContent(int i)
+	public void getDateContent(int i)
 	{
 		while(i<command.size()&&!command.get(i).matches("-.*"))
 		{
 			dateContent=command.get(i);
 			i++;
 		}
-//		System.out.println(dateContent);
 	}
-	public void Get_logContent(int i)
+	public void getLogContent(int i)
 	{
 		while(i<command.size()&&!command.get(i).matches("-.*"))
 		{
 			logContent=command.get(i);
 			i++;
 		}
-//		System.out.println(logContent);
 	}
-	public void Get_outContent(int i)
+	public void getOutContent(int i)
 	{
 		while(i<command.size()&&!command.get(i).matches("-.*"))
 		{
 			outContent=command.get(i);
 			i++;
 		}
-//		System.out.println(outContent);
 	}
 }
