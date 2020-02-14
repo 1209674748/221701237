@@ -766,23 +766,23 @@ class Command{
 					break;
 				case "-log":
 					this.log=true;
-					getLogContent(i+1);
+					setLogContent(i+1);
 					break;
 				case "-out":
 					this.out=true;
-					getOutContent(i+1);
+					setOutContent(i+1);
 					break;
 				case "-date":
 					this.date=true;
-					getDateContent(i+1);
+					setDateContent(i+1);
 					break;
 				case "-province":
 					this.province=true;
-					getProvinceContent(i+1);
+					setProvinceContent(i+1);
 					break;
 				case "-type":
 					this.type=true;
-					getTypeContent(i+1);
+					setTypeContent(i+1);
 					break;
 					
 			}
@@ -879,7 +879,7 @@ class Command{
 	//传入参数：该命令所在数组的位置后一位
 	//返回值:无
 	//实现方法:传入参数作为起始，不断向后读取，碰到带有“-”开头的字符串时停止
-	public void getProvinceContent(int i)
+	public void setProvinceContent(int i)
 	{
 		while(i<command.size()&&!command.get(i).matches("-.*"))
 		{
@@ -887,7 +887,7 @@ class Command{
 			i++;
 		}
 	}
-	public void getTypeContent(int i)
+	public void setTypeContent(int i)
 	{
 		while(i<command.size()&&!command.get(i).matches("-.*"))
 		{
@@ -895,7 +895,7 @@ class Command{
 			i++;
 		}
 	}
-	public void getDateContent(int i)
+	public void setDateContent(int i)
 	{
 		while(i<command.size()&&!command.get(i).matches("-.*"))
 		{
@@ -903,7 +903,7 @@ class Command{
 			i++;
 		}
 	}
-	public void getLogContent(int i)
+	public void setLogContent(int i)
 	{
 		while(i<command.size()&&!command.get(i).matches("-.*"))
 		{
@@ -911,7 +911,7 @@ class Command{
 			i++;
 		}
 	}
-	public void getOutContent(int i)
+	public void setOutContent(int i)
 	{
 		while(i<command.size()&&!command.get(i).matches("-.*"))
 		{
