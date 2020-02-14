@@ -1,8 +1,10 @@
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.Date;
@@ -84,14 +86,14 @@ class fileWrite
 		this.outPath = outPath;
 		
        	String parentPath = outPath.substring(0,outPath.lastIndexOf("\\"));
-       	File file = new File(parentPath);
-       	File file2 = new File(outPath);
-        if (!file.exists()) 
+       	File file1 = new File(parentPath);
+       	file = new File(outPath);
+        if (!file1.exists()) 
         {
-            file.mkdirs();// 能创建多级目录
+            file1.mkdirs();// 能创建多级目录
             try 
             {
-				file2.createNewFile();
+				file1.createNewFile();
 			} 
             catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -103,7 +105,7 @@ class fileWrite
         {
         	  try 
         	  {
-  				file2.createNewFile();
+  				file.createNewFile();
   			  } 
         	  catch (IOException e) 
         	  {
@@ -115,20 +117,45 @@ class fileWrite
 	}
 	public void writeResult()
 	{
+		FileWriter fileWriter = null;
+		try {
+			fileWriter = new FileWriter(file.getAbsoluteFile());
+		} catch (IOException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
+		BufferedWriter bw = new BufferedWriter(fileWriter);
 		if(isProvince==false&&isType==false)
-		{
+		{		
 			for(int i=0;i<provinceList.length;i++)
 	        {
 	        	if(provinceList[i].getAppear())
 	        	{
-		        	System.out.println(provinceList[i].getName());
-		        	System.out.println("感染患者 "+provinceList[i].getIp());
-		        	System.out.println("疑似患者 "+provinceList[i].getSp());
-		        	System.out.println("治愈 "+provinceList[i].getCure());
-		        	System.out.println("死亡 "+provinceList[i].getDead());
-		        	System.out.println();
+	        		try {
+						bw.write(provinceList[i].getName()+" "+"感染患者 "+provinceList[i].getIp()
+								+" "+"疑似患者 "+provinceList[i].getSp()+" "+"治愈 "+provinceList[i].getCure()
+								+" "+"死亡 "+provinceList[i].getDead()+"人");
+						bw.newLine();
+						
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+//		        	System.out.println(provinceList[i].getName());
+//		        	System.out.println("感染患者 "+provinceList[i].getIp());
+//		        	System.out.println("疑似患者 "+provinceList[i].getSp());
+//		        	System.out.println("治愈 "+provinceList[i].getCure());
+//		        	System.out.println("死亡 "+provinceList[i].getDead());
+//		        	System.out.println();
 	        	}
 	        }
+			try {
+				bw.append("// 该文档并非真实数据，仅供测试使用");
+				bw.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		if(isProvince==true&&isType==false)
 		{
@@ -138,14 +165,31 @@ class fileWrite
 				{
 					if(provinceList[i].getName().equals(provinceContent.get(n)))
 					{
-						System.out.println(provinceList[i].getName());
-			        	System.out.println("感染患者 "+provinceList[i].getIp());
-			        	System.out.println("疑似患者 "+provinceList[i].getSp());
-			        	System.out.println("治愈 "+provinceList[i].getCure());
-			        	System.out.println("死亡 "+provinceList[i].getDead());
-			        	System.out.println();
+						try {
+							bw.write(provinceList[i].getName()+" "+"感染患者"+provinceList[i].getIp()+
+									"人 "+"疑似患者"+provinceList[i].getSp()+"人 "+"治愈"+provinceList[i].getCure()
+									+"人 "+"死亡"+provinceList[i].getDead()+"人");
+							bw.newLine();
+							
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+//						System.out.println(provinceList[i].getName());
+//			        	System.out.println("感染患者 "+provinceList[i].getIp());
+//			        	System.out.println("疑似患者 "+provinceList[i].getSp());
+//			        	System.out.println("治愈 "+provinceList[i].getCure());
+//			        	System.out.println("死亡 "+provinceList[i].getDead());
+//			        	System.out.println();
 					}
 				}
+			}
+			try {
+				bw.append("// 该文档并非真实数据，仅供测试使用");
+				bw.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 		if(isProvince==true&&isType==true)
@@ -156,30 +200,72 @@ class fileWrite
 				{
 					if(provinceList[i].getName().equals(provinceContent.get(n)))
 					{
-						System.out.println(provinceList[i].getName());
+						try {
+							bw.write(provinceList[i].getName()+" ");
+						} catch (IOException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						///System.out.println(provinceList[i].getName());
 						for(int j=0;j<typeContent.size();j++)
 						{
 							String type = typeContent.get(j);
 							if(type.equals("ip"))
 							{
-								System.out.println("感染患者 "+provinceList[i].getIp());
+								try {
+									bw.write("感染患者"+provinceList[i].getIp()+"人 ");
+								} catch (IOException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+								//System.out.println("感染患者 "+provinceList[i].getIp());
 							}
 							if(type.equals("sp"))
 							{
-								System.out.println("感染患者 "+provinceList[i].getSp());
+								try {
+									bw.write("疑似患者"+provinceList[i].getSp()+"人 ");
+								} catch (IOException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+								//System.out.println("感染患者 "+provinceList[i].getSp());
 							}
 							if(type.equals("cure"))
 							{
-								System.out.println("治愈 "+provinceList[i].getCure());
+								try {
+									bw.write("治愈"+provinceList[i].getCure()+"人 ");
+								} catch (IOException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+								//System.out.println("治愈"+provinceList[i].getCure());
 							}
 							if(type.equals("dead"))
 							{
-								System.out.println("死亡 "+provinceList[i].getDead());
+								try {
+									bw.write("死亡"+provinceList[i].getDead()+"人 ");
+								} catch (IOException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+								//System.out.println("死亡 "+provinceList[i].getDead());
 							}
 						}
-						System.out.println();
+						try {
+							bw.newLine();
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					}
 				}
+			}
+			try {
+				bw.append("// 该文档并非真实数据，仅供测试使用");
+				bw.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 		if(isProvince==false&&isType==true)
@@ -188,30 +274,73 @@ class fileWrite
 	        {
 	        	if(provinceList[i].getAppear())
 	        	{
-	        		System.out.println(provinceList[i].getName());
+	        		try {
+						bw.write(provinceList[i].getName()+" ");
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+	        		//System.out.println(provinceList[i].getName());
 					for(int j=0;j<typeContent.size();j++)
 					{
 						String type = typeContent.get(j);
 						if(type.equals("ip"))
 						{
-							System.out.println("感染患者 "+provinceList[i].getIp());
+							try {
+								bw.write("感染患者"+provinceList[i].getIp()+"人 ");
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							//System.out.println("感染患者 "+provinceList[i].getIp());
 						}
 						if(type.equals("sp"))
 						{
-							System.out.println("感染患者 "+provinceList[i].getSp());
+							try {
+								bw.write("疑似患者"+provinceList[i].getSp()+"人 ");
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							//System.out.println("感染患者 "+provinceList[i].getSp());
 						}
 						if(type.equals("cure"))
 						{
-							System.out.println("治愈 "+provinceList[i].getCure());
+							try {
+								bw.write("治愈"+provinceList[i].getCure()+"人 ");
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							//System.out.println("治愈"+provinceList[i].getCure());
 						}
 						if(type.equals("dead"))
 						{
-							System.out.println("死亡 "+provinceList[i].getDead());
+							try {
+								bw.write("死亡"+provinceList[i].getDead()+"人 ");
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							//System.out.println("死亡 "+provinceList[i].getDead());
 						}
 					}
-					System.out.println();
+					try {
+						bw.newLine();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					//System.out.println();
 				}
 	        }
+			try {
+				bw.append("// 该文档并非真实数据，仅供测试使用");
+				bw.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 //		if(!isProvice)
 //        {
