@@ -17,6 +17,6 @@
 > 如：java InfectStatistic list -date 2020-01-22 -log D:/log/ -out D:/output.txt<br/>
 > 会读取D:/log/下的所有日志，然后处理日志和命令，将结果生成ouput.txt文件中<br/>
 ## 作业链接<br/>
-<a href="https://edu.cnblogs.com/campus/fzu/2020SpringW/homework/10281"/><br/>
+<a href="https://edu.cnblogs.com/campus/fzu/2020SpringW/homework/10281">寒假作业（2/2）——疫情统计</a><br/>
 ## 博客链接<br/>
-<a herf="#"/>
+<a herf="#">我的博客</a>
