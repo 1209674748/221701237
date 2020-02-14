@@ -51,13 +51,13 @@ class InfectStatistic {
         	System.exit(0);
         }
         fileRead fileoperate = new fileRead(command.logContent,provinceList);
-        if(command.dataContent.equals("all"))
+        if(command.dateContent.equals("all"))
         {
         	fileoperate.readLog("all");
         }
         else
         {
-        	fileoperate.readLog(command.dataContent);
+        	fileoperate.readLog(command.dateContent);
         }
         fileWrite wr = new fileWrite(provinceList,command.province,command.type,
         		command.provinceContent,command.typeContent,command.outContent);
@@ -356,12 +356,13 @@ class fileRead{
 	File[] tempList;
 	province [] provinceList;
 	String [] templates = {
-			".* 新增 感染患者 .*人",".* 新增 疑似患者 .*人",".* 感染患者 流入 .* .*人",
-			".* 疑似患者 流入 .* .*人",".* 死亡 .*人",".*治愈 .*人",".* 疑似患者 确诊感染 .*人",
-			".* 排除 疑似患者 .*人"
+			"(\\S+) 新增 感染患者 (\\d+)人","(\\S+) 新增 疑似患者 (\\d+)人","(\\S+) 感染患者 流入 (\\S+) (\\d+)人",
+			"(\\S+) 疑似患者 流入 (\\S+) (\\d+)人","(\\S+) 死亡 (\\d+)人","(\\S+) 治愈 (\\d+)人",
+			"(\\S+) 疑似患者 确诊感染 (\\d+)人",
+			"(\\S+) 排除 疑似患者 (\\d+)人"
 	};
-	String maxData;
-	String minData;
+	String maxdate;
+	String mindate;
 	public fileRead(String path,province [] pList)
 	{
 		this.path=path;
@@ -388,50 +389,50 @@ class fileRead{
         	filesName.add(f.substring(f.length()-18,f.length()-8));
         	//System.out.println(filesName.get(i));
         }
-        if((maxData = findMaxData(filesName))==null)
+        if((maxdate = findMaxdate(filesName))==null)
         {
         	System.out.println("寻找最大日期出错");
         }
-        if((minData = findMinData(filesName))==null)
+        if((mindate = findMindate(filesName))==null)
         {
         	System.out.println("寻找最小日期出错");
         }
 	}
-	public String findMaxData(ArrayList<String> filesName)
+	public String findMaxdate(ArrayList<String> filesName)
 	{
-		String data="0000-00-00";
+		String date="0000-00-00";
 		for(int i=0;i<filesName.size();i++)
 		{
-			if(filesName.get(i).compareTo(data)>0)
+			if(filesName.get(i).compareTo(date)>0)
 			{
-				data=filesName.get(i);			
+				date=filesName.get(i);			
 			}
 		}
-		return data;
+		return date;
 	}
-	public String findMinData(ArrayList<String> filesName)
+	public String findMindate(ArrayList<String> filesName)
 	{
-		String data="9999-99-99";
+		String date="9999-99-99";
 		for(int i=0;i<filesName.size();i++)
 		{
-			if(filesName.get(i).compareTo(data)<0)
+			if(filesName.get(i).compareTo(date)<0)
 			{
-				data=filesName.get(i);				
+				date=filesName.get(i);				
 			}
 		}
-		return data;
+		return date;
 	}
 	public boolean readLog(String path)
 	{
 		
 		if(path.equals("all")) 
 		{
-			readLogFile(maxData);
+			readLogFile(maxdate);
 			return true;
 		}
 		else
 		{
-			if(path.compareTo(maxData)>0||path.compareTo(minData)<0)
+			if(path.compareTo(maxdate)>0||path.compareTo(mindate)<0)
 			{
 				return false;
 			}
@@ -481,22 +482,25 @@ class fileRead{
 	}
 	public void statisNum(String text)
 	{
+		text=text.trim();
 		if(text.matches(templates[0]))
 		{
 			//System.out.println(123);
-			String provinceName = text.substring(0,text.indexOf(" ")).trim();
+			String provinceName = getProvince(text,0);
 			//System.out.println(text);
 			//System.out.println(text.substring(text.lastIndexOf(" "),text.length()-1).trim());
-			int num = Integer.parseInt(text.substring(text.lastIndexOf(" "),text.length()-1).trim());
+			int num = getNum(text);
+			//int num = Integer.parseInt(text.substring(text.lastIndexOf(" "),text.length()-1).trim());
 			provinceList[findLocal(provinceName)].addIp(num);
 			provinceList[findLocal(provinceName)].setAppear();
 			provinceList[0].addIp(num);
 		}
 		if(text.matches(templates[1]))
 		{
-			String provinceName = text.substring(0,text.indexOf(" ")).trim();
+			String provinceName = getProvince(text,0);
+			int num = getNum(text);
 			//System.out.println(text.substring(text.lastIndexOf(" "),text.length()-1).trim());
-			int num = Integer.parseInt(text.substring(text.lastIndexOf(" "),text.length()-1).trim());
+			//int num = Integer.parseInt(text.substring(text.lastIndexOf(" "),text.length()-1).trim());
 			provinceList[findLocal(provinceName)].addSp(num);
 			provinceList[findLocal(provinceName)].setAppear();
 			provinceList[0].addSp(num);
@@ -504,9 +508,10 @@ class fileRead{
 		if(text.matches(templates[2]))
 		{
 			//System.out.println(text);
-			String provinceName1 = text.substring(0,text.indexOf(" ")).trim();
-			String provinceName2 = text.substring(text.lastIndexOf(" ")-2,text.lastIndexOf(" "));
-			int num = Integer.parseInt(text.substring(text.lastIndexOf(" "),text.length()-1).trim());
+			String provinceName1 = getProvince(text,0);
+			String provinceName2 = getProvince(text,3);
+			int num = getNum(text);
+			//int num = Integer.parseInt(text.substring(text.lastIndexOf(" "),text.length()-1).trim());
 			//System.out.println(provinceName1);
 			//System.out.println(provinceName2);
 			//System.out.println(num);
@@ -519,9 +524,10 @@ class fileRead{
 		if(text.matches(templates[3]))
 		{
 			//System.out.println(text);
-			String provinceName1 = text.substring(0,text.indexOf(" ")).trim();
-			String provinceName2 = text.substring(text.lastIndexOf(" ")-2,text.lastIndexOf(" "));
-			int num = Integer.parseInt(text.substring(text.lastIndexOf(" "),text.length()-1).trim());
+			String provinceName1 = getProvince(text,0);
+			String provinceName2 = getProvince(text,3);
+			int num = getNum(text);
+			//int num = Integer.parseInt(text.substring(text.lastIndexOf(" "),text.length()-1).trim());
 			//System.out.println(provinceName1);
 			//System.out.println(provinceName2);
 			//System.out.println(num);
@@ -535,8 +541,9 @@ class fileRead{
 		if(text.matches(templates[4]))
 		{
 			//System.out.println(text);
-			String provinceName = text.substring(0,text.indexOf(" ")).trim();
-			int num = Integer.parseInt(text.substring(text.lastIndexOf(" "),text.length()-1).trim());
+			String provinceName = getProvince(text,0);
+			int num = getNum(text);
+			//int num = Integer.parseInt(text.substring(text.lastIndexOf(" "),text.length()-1).trim());
 			//System.out.println(provinceName);
 			//System.out.println(num);
 			int i = findLocal(provinceName);
@@ -549,8 +556,9 @@ class fileRead{
 		if(text.matches(templates[5]))
 		{
 			//System.out.println(text);
-			String provinceName = text.substring(0,text.indexOf(" ")).trim();
-			int num = Integer.parseInt(text.substring(text.lastIndexOf(" "),text.length()-1).trim());
+			String provinceName = getProvince(text,0);
+			int num = getNum(text);
+			//int num = Integer.parseInt(text.substring(text.lastIndexOf(" "),text.length()-1).trim());
 			//System.out.println(provinceName);
 			//System.out.println(num);
 			int i = findLocal(provinceName);
@@ -563,8 +571,9 @@ class fileRead{
 		if(text.matches(templates[6]))
 		{
 			//System.out.println(text);
-			String provinceName = text.substring(0,text.indexOf(" ")).trim();
-			int num = Integer.parseInt(text.substring(text.lastIndexOf(" "),text.length()-1).trim());
+			String provinceName = getProvince(text,0);
+			int num = getNum(text);
+			//int num = Integer.parseInt(text.substring(text.lastIndexOf(" "),text.length()-1).trim());
 			//System.out.println(provinceName);
 			//System.out.println(num);
 			int i = findLocal(provinceName);
@@ -577,8 +586,9 @@ class fileRead{
 		if(text.matches(templates[7]))
 		{
 			//System.out.println(text);
-			String provinceName = text.substring(0,text.indexOf(" ")).trim();
-			int num = Integer.parseInt(text.substring(text.lastIndexOf(" "),text.length()-1).trim());
+			String provinceName = getProvince(text,0);
+			int num = getNum(text);
+			//int num = Integer.parseInt(text.substring(text.lastIndexOf(" "),text.length()-1).trim());
 			//System.out.println(provinceName);
 			//System.out.println(num);
 			int i = findLocal(provinceName);
@@ -587,15 +597,29 @@ class fileRead{
 			provinceList[0].subSp(num);
 		}
 	}
+	public String getProvince(String text,int index)
+	{
+		String [] temp =text.split(" ");
+		return temp[index];
+	}
+	public Integer getNum(String text)
+	{
+		String regex = "\\d+";
+		Pattern pattern =  Pattern.compile(regex);
+		Matcher matcher = pattern.matcher(text);
+		matcher.find();
+		Integer num = Integer.parseInt(matcher.group());
+		return num;
+	}
 }
 class Command{
 	Boolean list=false;
 	Boolean log=false;
 	Boolean out=false;
-	Boolean data=false;
+	Boolean date=false;
 	Boolean type=false;
 	Boolean province=false;
-	String dataContent;
+	String dateContent;
 	String logContent;
 	String outContent;
 	List<String> provinceContent = new ArrayList<String>();
@@ -604,7 +628,7 @@ class Command{
 	public Command(List<String> list)
 	{
 		command=list;
-		dataContent="all";
+		dateContent="all";
 		for(int i=0;i<list.size();i++)
 		{
 			String str = list.get(i);
@@ -620,9 +644,9 @@ class Command{
 					this.out=true;
 					Get_outContent(i+1);
 					break;
-				case "-data":
-					this.data=true;
-					Get_dataContent(i+1);
+				case "-date":
+					this.date=true;
+					Get_dateContent(i+1);
 					break;
 				case "-province":
 					this.province=true;
@@ -638,11 +662,11 @@ class Command{
 	}
 	public boolean isLegal()
 	{
-		if(data)
+		if(date)
 		{
 			String regex = "[0-9]{4}-[0-9]{2}-[0-9]{2}";
 	        Pattern pattern = Pattern.compile(regex);
-	        Matcher m = pattern.matcher(dataContent);
+	        Matcher m = pattern.matcher(dateContent);
 	        boolean dateFlag = m.matches();
 	        if (!dateFlag) {
 	            System.out.println("日期格式错误");
@@ -651,7 +675,7 @@ class Command{
 	        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd"); 
 	        formatter.setLenient(false);
 	        try{  
-	            formatter.parse(dataContent);  
+	            formatter.parse(dateContent);  
 	        }catch(Exception e){
 	            System.out.println("日期格式错误！");
 	            return false;//日期格式错误 例如:2a20-01-03(出现非数字字符)
@@ -736,14 +760,14 @@ class Command{
 //			System.out.println(typeContent.get(n));
 //		}
 	}
-	public void Get_dataContent(int i)
+	public void Get_dateContent(int i)
 	{
 		while(i<command.size()&&!command.get(i).matches("-.*"))
 		{
-			dataContent=command.get(i);
+			dateContent=command.get(i);
 			i++;
 		}
-//		System.out.println(dataContent);
+//		System.out.println(dateContent);
 	}
 	public void Get_logContent(int i)
 	{
