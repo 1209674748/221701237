@@ -42,21 +42,21 @@ class InfectStatistic {
     	
     	provinceList[0] = new province("全国");
     	provinceList[0].setAppear();
-    	for(int i=1;i<provinceName.length+1;i++)
+    	for(int i=1;i<provinceName.length+1;i++)//初始化省份数组
     	{
     		provinceList[i] = new province(provinceName[i-1]);
     	}
-        for(int i=0;i<args.length;i++)
+        for(int i=0;i<args.length;i++)//获取所有附带的命令及参数
         {
         	list.add(args[i]);
         }
-        command = new Command(list);
-        if(!command.isLegal())
+        command = new Command(list);//初始化一个命令类
+        if(!command.isLegal())//判断命令参数是否非法
         {
         	System.exit(0);
         }
-        fileoperate = new fileRead(command.getLogContent(),provinceList);
-        if(command.getDateContent().equals("all"))
+        fileoperate = new fileRead(command.getLogContent(),provinceList);//初始化一个文件操作读文件类
+        if(command.getDateContent().equals("all"))//判断是否有指定具体日期
         {
         	fileoperate.readLog("all");
         }
@@ -94,7 +94,7 @@ class fileWrite
 		this.typeContent = typeContent;
 		
 		String parentPath=null;
-		if(outPath.lastIndexOf("\\")<0)
+		if(outPath.lastIndexOf("\\")<0)//为了测试的时候路径是windows风格还是Linux风格做准备，虽然好像没什么用
 		{
 			parentPath = outPath.substring(0,outPath.lastIndexOf("/"));
 		}
@@ -104,12 +104,12 @@ class fileWrite
 		}  	
        	File file1 = new File(parentPath);//file1为file的父文件路径
        	file = new File(outPath);
-        if (!file1.exists()) 
+        if (!file1.exists()) //父目录不存在，则先创建父目录
         {
             file1.mkdirs();// 能创建多级目录
             try 
             {
-				file1.createNewFile();
+				file.createNewFile();
 			} 
             catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -131,6 +131,14 @@ class fileWrite
   			}
         }
 	}
+	//输入结果到文件方法
+	//没有想到什么好的解决办法，就把每种情况都列了出来
+	//1.没输入-province命令，没输入-type
+	//2.输入-province命令，没输入-type
+	//3.输入-province命令，输入-type
+	//4.没输入-province命令，输入-type
+	//分别与下面的四个判断对应
+	//由于嵌套循环较多，若程序性能较差可以考虑修改这方面的代码（虽然我已经想过了）
 	public void writeResult()
 	{
 		FileWriter fileWriter = null;
@@ -336,18 +344,15 @@ class fileWrite
 			}
 		}
 	}
-	public int findLocal(String name)
-	{
-		for(int i=1;i<provinceList.length;i++)
-		{
-			if(provinceList[i].getName().equals(name))
-			{
-				return i;
-			}
-		}
-		return 0;
-	}
 }
+//省份类 用于存储各个全国和各个省份的各种数据
+//代码中开辟一个province数组，第0位存放全国，其余省份按排序一次存放
+//name:省份的名称
+//ip:感染患者数量
+//sp:疑似患者数量
+//cure:治愈患者数量
+//dead:死亡患者数量
+//appear:用来判断是否在日志文件中出现该省份
 class province
 {
 	private String name;
@@ -356,7 +361,6 @@ class province
 	private int cure;
 	private int dead;
 	private boolean appear;
-	private boolean isInput;
 	public province(String name)
 	{
 		this.name=name;
@@ -365,15 +369,10 @@ class province
 		cure=0;
 		dead=0;
 		appear=false;
-		isInput=false;
 	}
 	public void setAppear()
 	{
 		appear=true;
-	}
-	public void setIsInput()
-	{
-		isInput=true;
 	}
 	public void addIp(int n)
 	{
@@ -431,11 +430,17 @@ class province
 	{
 		return appear;
 	}
-	public boolean getIsInput()
-	{
-		return isInput;
-	}
 }
+//文件操作类-读文件
+//path:日志文件的路径，-log后带的参数
+//files:该路径下的说有文件路径(绝对路径)
+//filesName:该路径下所有文件的名称，用于判断输入的日期是否超出范围(仅名称不带后缀)
+//file:文件路径打开的文件夹
+//tempList:该路径下的所有文件
+//provinceList:省份数组
+//templates:用于匹配日志文件内容的正则表达式模板
+//maxDate:该路径下的日志文件的最大日期
+//minDate:该路径下的日志文件的最小日期
 class fileRead{
 	String path;
 	ArrayList<String> files;
@@ -449,8 +454,13 @@ class fileRead{
 			"(\\S+) 疑似患者 确诊感染 (\\d+)人",
 			"(\\S+) 排除 疑似患者 (\\d+)人"
 	};
-	String maxdate;
-	String mindate;
+	String maxDate;
+	String minDate;
+	//构造函数
+	//传入参数：1.日志文件路径 如：c:\log\,2.省份数组
+	//函数功能：1.判断日志文件路径
+	//			2.获取日志文件路径下所有文件的绝对路径
+	//			3.获取日志文件路径下所有文件的名称
 	public fileRead(String path,province [] pList)
 	{
 		this.path=path;
@@ -463,7 +473,7 @@ class fileRead{
 			System.out.println("日志文件路径有误!");
 			System.exit(0);
 		}
-        tempList = file.listFiles(); 
+        tempList = file.listFiles();
         if(tempList==null)
         {
         	System.out.println("null");
@@ -474,15 +484,18 @@ class fileRead{
         	files.add(f);
         	filesName.add(f.substring(f.length()-18,f.length()-8));
         }
-        if((maxdate = findMaxdate(filesName))==null)
+        if((maxDate = findMaxdate(filesName))==null)
         {
         	System.out.println("寻找最大日期出错");
         }
-        if((mindate = findMindate(filesName))==null)
+        if((minDate = findMindate(filesName))==null)
         {
         	System.out.println("寻找最小日期出错");
         }
 	}
+	//查找最大/最小日期方法
+	//传入参数:日期字符串 如{“2020-01-22”，“2020-01-25”，“2020-01-23”}
+	//返回值：最大/小日期
 	public String findMaxdate(ArrayList<String> filesName)
 	{
 		String date="0000-00-00";
@@ -495,7 +508,7 @@ class fileRead{
 		}
 		return date;
 	}
-	public String findMindate(ArrayList<String> filesName)
+	public String findMindate(ArrayList<String> filesName)				
 	{
 		String date="9999-99-99";
 		for(int i=0;i<filesName.size();i++)
@@ -507,18 +520,24 @@ class fileRead{
 		}
 		return date;
 	}
+	//判单读取日志文件数量
+	//传入参数：日期 如：2020-01-22
+	//返回值:false 或 true
+	//path:-date命令后面带的日期
+	//path有两种取值:1.正常日期 ，输入-date后带的符合规范的日期。
+	//				2. “all” 字符串，未输入-date命令或者输入-date命令后未指定具体日期时
+	//	
 	public boolean readLog(String path)
 	{
-		
-		if(path.equals("all")) 
+		if(path.equals("all")) //如果path是all直接读取到maxDate日期为止
 		{
-			readLogFile(maxdate);
+			readLogFile(maxDate);
 			return true;
 		}
 		else
 		{
-			if(path.compareTo(maxdate)>0||path.compareTo(mindate)<0)
-			{
+			if(path.compareTo(maxDate)>0||path.compareTo(minDate)<0)//判断输入的日期是否在日志文件的
+			{														//范围中
 				return false;
 			}
 			else
@@ -528,6 +547,10 @@ class fileRead{
 			}		
 		}
 	}
+	//读取日志文件内容的办法
+	//传入参数：指定日期(yyyy-mm-dd格式） 如2020-01-22
+	//返回值：无
+	//注：path.compareTo(filesName.get(i)判断要读取的日志文件日期是否超过输入日期
 	public void readLogFile(String path)
 	{
 		int i=0;
@@ -540,7 +563,7 @@ class fileRead{
                 String text = null;
                 try {
 					while((text = bufferedReader.readLine()) != null){
-					    statisNum(text);
+					    statisNum(text);//统计数据方法
 					}
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
@@ -553,6 +576,10 @@ class fileRead{
 			i++;
 		}
 	}
+	//查找指定省份的所在provinceList数组中的位置方法
+	//传入参数:省份名称 如:福建
+	//返回值:传入的省份所在的位置 如:4(福建位于第四个,因为第0个是全国)
+	//实现方式:用for循环遍历provinList数组，与其中的name比较，命中则返回值
 	public int findLocal(String name)
 	{
 		for(int i=1;i<provinceList.length;i++)
@@ -564,6 +591,11 @@ class fileRead{
 		}
 		return 0;
 	}
+	//统计日志文件中数据的办法
+	//传入参数:日志文件中的一行数据 如：福建 新增 感染患者 2人
+	//返回值:无
+	//实现方法:单行匹配，将传入的数据与先去准备好的正则表达式模板templates进行比较，若命中则跳转分支进行处理
+	//处理结果:更新provinceList中的数据
 	public void statisNum(String text)
 	{
 		text=text.trim();
@@ -652,6 +684,10 @@ class fileRead{
 		String [] temp =text.split(" ");
 		return temp[index];
 	}
+	//处理日志文件中每一行中*人的人数方法
+	//传入参数:日志文件中的一行数据 如：福建 新增 感染患者 2人
+	//返回值:2
+	//实现方法:用正则表达式匹配提取数据
 	public Integer getNum(String text)
 	{
 		String regex = "\\d+";
@@ -662,6 +698,19 @@ class fileRead{
 		return num;
 	}
 }
+//命令类
+//list：判断是否输入-list
+//log：判断是否输入-log
+//out：判断是否输入-out
+//date：判断是否输入-date
+//type：判断是否输入-type
+//province：判断是否输入-province
+//dateContent：-date命令后带参数
+//logContent：-log命令后带参数
+//outContent：-out命令后带参数
+//provinceContent：-province后带参数
+//typeContent：-type后带参数
+//command：输入的命令字符串数组
 class Command{
 	private Boolean list=false;
 	private Boolean log=false;
@@ -739,6 +788,12 @@ class Command{
 			}
 		}
 	}
+	//判断各命令参数是否合法
+	//输入参数：无
+	//返回值:true或false
+	//-list必不可少，-date可有可无 日期格式（yyyy-mm-dd）缺一不可
+	//-log命名跟后带参数均不可少
+	//-out命名跟后带参数均不可少
 	public boolean isLegal()
 	{
 		if(!list)
@@ -820,6 +875,10 @@ class Command{
 		}
 		return true;
 	}
+	//或者各命令后带参数方法
+	//传入参数：该命令所在数组的位置后一位
+	//返回值:无
+	//实现方法:传入参数作为起始，不断向后读取，碰到带有“-”开头的字符串时停止
 	public void getProvinceContent(int i)
 	{
 		while(i<command.size()&&!command.get(i).matches("-.*"))
