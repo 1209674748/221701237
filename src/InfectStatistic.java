@@ -175,7 +175,7 @@ class writeFile
 				e.printStackTrace();
 			}
 		}
-		if(isProvince==true&&isType==false)
+		else if(isProvince==true&&isType==false)
 		{
 			for(int i=0;i<provinceList.length;i++)
 			{
@@ -204,7 +204,7 @@ class writeFile
 				e.printStackTrace();
 			}
 		}
-		if(isProvince==true&&isType==true)
+		else if(isProvince==true&&isType==true)
 		{
 			for(int i=0;i<provinceList.length;i++)
 			{
@@ -275,7 +275,7 @@ class writeFile
 				e.printStackTrace();
 			}
 		}
-		if(isProvince==false&&isType==true)
+		else if(isProvince==false&&isType==true)
 		{
 			for(int i=0;i<provinceList.length;i++)
 	        {
@@ -394,17 +394,9 @@ class province
 	{
 		cure+=n;
 	}
-	public void subCure(int n)
-	{
-		cure-=n;
-	}
 	public void addDead(int n)
 	{
 		dead+=n;
-	}
-	public void subDead(int n)
-	{
-		dead-=n;
 	}
 	public String getName()
 	{
@@ -538,6 +530,8 @@ class readFile{
 		{
 			if(path.compareTo(maxDate)>0||path.compareTo(minDate)<0)//判断输入的日期是否在日志文件的
 			{														//范围中
+				System.out.println("日期超出范围");
+				System.exit(0);
 				return false;
 			}
 			else
@@ -607,7 +601,7 @@ class readFile{
 			provinceList[findLocal(provinceName)].setAppear();
 			provinceList[0].addIp(num);
 		}
-		if(text.matches(templates[1]))
+		else if(text.matches(templates[1]))
 		{
 			String provinceName = getProvince(text,0);
 			int num = getNum(text);
@@ -615,7 +609,7 @@ class readFile{
 			provinceList[findLocal(provinceName)].setAppear();
 			provinceList[0].addSp(num);
 		}
-		if(text.matches(templates[2]))
+		else if(text.matches(templates[2]))
 		{
 			String provinceName1 = getProvince(text,0);
 			String provinceName2 = getProvince(text,3);
@@ -625,7 +619,7 @@ class readFile{
 			provinceList[findLocal(provinceName2)].addIp(num);
 			provinceList[findLocal(provinceName2)].setAppear();
 		}
-		if(text.matches(templates[3]))
+		else if(text.matches(templates[3]))
 		{
 			String provinceName1 = getProvince(text,0);
 			String provinceName2 = getProvince(text,3);
@@ -636,7 +630,7 @@ class readFile{
 			provinceList[findLocal(provinceName2)].setAppear();
 			
 		}
-		if(text.matches(templates[4]))
+		else if(text.matches(templates[4]))
 		{
 			String provinceName = getProvince(text,0);
 			int num = getNum(text);
@@ -647,7 +641,7 @@ class readFile{
 			provinceList[0].subIp(num);
 			provinceList[0].addDead(num);
 		}
-		if(text.matches(templates[5]))
+		else if(text.matches(templates[5]))
 		{
 			String provinceName = getProvince(text,0);
 			int num = getNum(text);
@@ -658,7 +652,7 @@ class readFile{
 			provinceList[0].subIp(num);
 			provinceList[0].addCure(num);
 		}
-		if(text.matches(templates[6]))
+		else if(text.matches(templates[6]))
 		{
 			String provinceName = getProvince(text,0);
 			int num = getNum(text);
@@ -669,7 +663,7 @@ class readFile{
 			provinceList[0].addIp(num);
 			provinceList[0].subSp(num);
 		}
-		if(text.matches(templates[7]))
+		else if(text.matches(templates[7]))
 		{
 			String provinceName = getProvince(text,0);
 			int num = getNum(text);
